@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import shortId from "shortid";
 import TodoList from "./components/TodoList";
+import EditForm from "./components/EditForm";
+import Modal from "./components/Modal";
 
 const App = () => {
   const [count, setCount] = useState(0);
@@ -12,24 +14,55 @@ const App = () => {
     setCount(count - 1);
   };
 
-  const [todoText, setTodoText] = useState("");
-  const handleChange = (e) => {
-    setTodoText(e.target.value);
-  };
+  // const [todoText, setTodoText] = useState("");
+  // const handleChange = (e) => {
+  //   setTodoText(e.target.value);
+  // };
 
   const [todos, setTodos] = useState([]);
-  const addTodo = (e) => {
-    e.preventDefault();
+
+  const addTodo = (text) => {
     const todo = {
       id: shortId.generate(),
-      text: todoText,
+      text,
     };
-    setTodos([...todos, todo]);
-    setTodoText("");
+    // setTimeout(() => {
+    //   setTodos((prev) => [...prev, todo]);
+    // }, 2000);
+    setTodos((prev) => [todo, ...prev]);
+
+    // 1. todos []
+    // 2. todos []
+    // 3. todos []
+    // setTimeout(() => {
+    //   setTodos([...todos, todo]);
+    // }, 2000);
+    // setTodoText("");
   };
-  const delTask = (id) => {
-    console.log("delete this task");
+  const delTodo = (taskId) => {
+    setTodos((prev) => prev.filter((el) => el.id !== taskId));
   };
+
+  useEffect(() => {
+    console.log("UseEffect render", Date.now());
+    // localStorage.setItem("todos", JSON.stringify(todos));
+    const persistedTodos = localStorage.getItem("todos");
+    console.log("allTodos", persistedTodos);
+
+    // if (persistedTodos) {
+    //   setTodos(JSON.parse(persistedTodos));
+    // }
+    // console.log(`UseEffect render" ${Date.now()}`);
+  }, [todos]);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
   return (
     <div style={{ width: 330, margin: "0 auto" }}>
       <div style={{ display: "flex" }}>
@@ -58,12 +91,18 @@ const App = () => {
         </button>
       </div>
       <hr />
-      <form onSubmit={addTodo} style={{ display: "block" }}>
+      <EditForm onSave={addTodo} />
+      {/* <form onSubmit={addTodo} style={{ display: "block" }}>
         <input type="text" onChange={handleChange} value={todoText} />
         <p>{todoText}</p>
         <button type="submit">SAVE</button>
-      </form>
-      {todos.length > 0 && <TodoList items={todos} delTask={delTask} />}
+      </form> */}
+      {todos.length > 0 && <TodoList items={todos} delTodo={delTodo} />}
+      <hr />
+      <button type="button" onClick={handleOpen}>
+        Open Modal
+      </button>
+      {isOpen && <Modal onClose={handleClose} />}
     </div>
   );
 };

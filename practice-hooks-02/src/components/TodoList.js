@@ -1,11 +1,11 @@
 import React from "react";
 
-const TodoList = ({ items, delTask }) => (
+const TodoList = ({ items, delTodo }) => (
   <ul>
-    {items.map((item) => (
-      <li key={item.id}>
-        <p>{item.text}</p>
-        <button onClick={delTask}>DELETE</button>
+    {items.map(({ id, text }) => (
+      <li key={id}>
+        <p>{text}</p>
+        <button onClick={() => delTodo(id)}>DELETE</button>
       </li>
     ))}
   </ul>
