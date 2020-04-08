@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import shortId from "shortid";
+import TodoList from "./components/TodoList";
 
 const App = () => {
   const [count, setCount] = useState(0);
@@ -15,6 +17,19 @@ const App = () => {
     setTodoText(e.target.value);
   };
 
+  const [todos, setTodos] = useState([]);
+  const addTodo = (e) => {
+    e.preventDefault();
+    const todo = {
+      id: shortId.generate(),
+      text: todoText,
+    };
+    setTodos([...todos, todo]);
+    setTodoText("");
+  };
+  const delTask = (id) => {
+    console.log("delete this task");
+  };
   return (
     <div style={{ width: 330, margin: "0 auto" }}>
       <div style={{ display: "flex" }}>
@@ -43,11 +58,12 @@ const App = () => {
         </button>
       </div>
       <hr />
-      <form style={{ display: "block" }}>
+      <form onSubmit={addTodo} style={{ display: "block" }}>
         <input type="text" onChange={handleChange} value={todoText} />
         <p>{todoText}</p>
-        <button type="submit">button</button>
+        <button type="submit">SAVE</button>
       </form>
+      {todos.length > 0 && <TodoList items={todos} delTask={delTask} />}
     </div>
   );
 };
