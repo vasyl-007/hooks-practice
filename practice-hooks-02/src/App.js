@@ -64,7 +64,7 @@ const App = () => {
   };
 
   return (
-    <div style={{ width: 330, margin: "0 auto" }}>
+    <div style={{ width: 630 }}>
       <div style={{ display: "flex" }}>
         <button
           onClick={increment}
